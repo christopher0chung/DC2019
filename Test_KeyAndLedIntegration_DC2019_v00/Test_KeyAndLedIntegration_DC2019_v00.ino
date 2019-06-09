@@ -64,8 +64,13 @@ void setup() {
 int ledX = 0;
 int ledY = 0;
 
-void loop() {
+void loop() 
+{
+  ReadInputs();  
+}  
 
+void ReadInputs()
+{
   if (kpd.getKeys())
   {
     for (int i = 0; i < LIST_MAX; i++) // Scan the whole key list.
@@ -97,7 +102,7 @@ void loop() {
       }
     }
   }
-}  // End loop
+}
 
 void UpdateLEDs(int i)
 {
