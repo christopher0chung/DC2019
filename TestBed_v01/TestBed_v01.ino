@@ -1,4 +1,9 @@
+// Keypad libraries
 #include <Key.h>
+#include <Keypad.h>
+#include <Keypad_MC17.h>    // I2C i/o library for Keypad
+#include <Wire.h>      
+
 
 //-----------------------------------------------------------------------------------------------------------
 // Region - Keypad

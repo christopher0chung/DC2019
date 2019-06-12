@@ -1,7 +1,4 @@
-// Keypad libraries
-#include <Keypad.h>
-#include <Keypad_MC17.h>    // I2C i/o library for Keypad
-#include <Wire.h>           // I2C library for Keypad_MC17
+// I2C library for Keypad_MC17
 
 class C_Input_Keys
 {
@@ -58,13 +55,14 @@ class C_Input_Keys
         return 6;
       else if (c == '!' || c == '@' || c == '#' || c == '$' || c == '%' || c == '^' || c == '&' || c == '*')
         return 7;
+      else return -1;
     }
 
     int ColFromChar(char c)
     {
       if (c == 'a' || c == 'i' || c == 'q' || c == '1' || c == 'A' || c == 'I' || c == 'Q' || c == '!' )
         return 0;
-      else if (c == 'b' || c == 'j' || c == 'r' || c == '2'|| c == 'B' || c == 'J' || c == 'R' || c == '@')
+      else if (c == 'b' || c == 'j' || c == 'r' || c == '2' || c == 'B' || c == 'J' || c == 'R' || c == '@')
         return 1;
       else if (c == 'c' || c == 'k' || c == 's' || c == '3' || c == 'C' || c == 'K' || c == 'S' || c == '#')
         return 2;
@@ -78,6 +76,7 @@ class C_Input_Keys
         return 6;
       else if (c == 'h' || c == 'p' || c == 'x' || c == '8' || c == 'H' || c == 'P' || c == 'X' || c == '*')
         return 7;
+      else return -1;
     }
 
     void StoreModel()

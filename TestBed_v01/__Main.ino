@@ -38,7 +38,7 @@ void loop()
     }
   }
 
-  KeepTrackOfTimeAndTick();
+  //KeepTrackOfTimeAndTick();
 }
 
 unsigned long lastMicros;
@@ -58,5 +58,6 @@ void KeepTrackOfTimeAndTick()
     timer -= 500000;
     counter00.Tick();
     leds00.Update();
+    Serial.println(counter00.counter_Unified);
   }
 }
