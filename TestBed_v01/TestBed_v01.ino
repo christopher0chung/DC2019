@@ -4,7 +4,7 @@
 // Region - Keypad
 //-----------------------------------------------------------------------------------------------------------
 
-#define I2CADDR 0x20        // address of MCP23017 chip on I2C bus
+#define I2CADDR 0x22        // address of MCP23017 chip on I2C bus
 
 const byte ROWS_key = 4; //four rows
 const byte COLS_key = 8; //three columns
@@ -14,8 +14,8 @@ const byte COLS_key = 8; //three columns
 // Region - LED
 //-----------------------------------------------------------------------------------------------------------
 
-const byte ROWS_led = 3; //four rows
-const byte COLS_led = 8; //three columns
+const byte ROWS_led = 8; //four rows
+const byte COLS_led = 48; //three columns
 
 //-----------------------------------------------------------------------------------------------------------
 // Region - Model

@@ -20,12 +20,14 @@ class V_Output_LEDs
 
     void Prep()
     {
-      
+      // LED setup
+      matrix.setIntensity(0); // Set brightness between 0 and 15
+      matrix.fillScreen(0);
     }
 
     void Update()
     {
-      
+
     }
 
   private:
