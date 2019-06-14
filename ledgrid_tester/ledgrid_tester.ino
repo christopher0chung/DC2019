@@ -8,6 +8,8 @@ int numberOfVerticalDisplays = 1;
 byte panelArrange[6] = {5, 4, 0, 1, 2, 3};
 Max72xxPanel matrix = Max72xxPanel(pinCS, numberOfHorizontalDisplays, numberOfVerticalDisplays);
 
+iubgaiwufbaw
+
 int incomingByte = 0;
 int x = 0;
 
