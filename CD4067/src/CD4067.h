@@ -18,8 +18,8 @@ class MuxIn {
     int finalVals[2][16];
   
     void attach(byte _pin);                                     // Associate microcontroller pin with CD4067
-    void refresh();                                            // Capture readings from all controllers
-    int getReading(byte _mux, byte _channel);                  // Access a reading from finalVals[]
+    void update();                                            // Capture readings from all controllers
+    int read(byte _mux, byte _channel);                  // Access a reading from finalVals[]
     int smooth(int data, float filterVal, float smoothedVal);  // Method for smoothing incoming readings
   private:
 };

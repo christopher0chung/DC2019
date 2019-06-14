@@ -1,12 +1,13 @@
 #######################################
-# Syntax Coloring Map For Modi
+# Syntax Coloring Map For CD4067
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-Modi	KEYWORD1	Modi
+CD4067	KEYWORD1	CD4067
+MuxIn	KEYWORD1	MuxIn
 
 #######################################
 # Methods and Functions (KEYWORD2)

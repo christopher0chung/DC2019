@@ -25,7 +25,7 @@ void MuxIn::attach(byte _pin) {
   numMux++;                                              // Advance one step in array for next usage of attach() method
 }
 
-void MuxIn::refresh() {
+void MuxIn::update() {
   for (int x = 0; x<muxChannels; x++) {                  // Stepping through the channels allows for changing selPins[] less often
     for (int y = 0; y <numMux; y++) {                    // numMux taken from how many times attach method was used
       int rawVal;                                        // Local variable to store value of incoming reading
@@ -41,7 +41,7 @@ void MuxIn::refresh() {
   }
 }
 
-int MuxIn::getReading(byte _mux, byte _channel) {
+int MuxIn::read(byte _mux, byte _channel) {
   return finalVals[_mux][_channel];                      // Return a value from the finalVals[][] array
 }
 
