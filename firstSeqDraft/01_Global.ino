@@ -6,7 +6,7 @@
 #include <Keypad_MC17.h>
 #include <Wire.h>
 
-#define I2CADDR 0x22
+#define I2CADDR 0x20
 
 const byte rows = 8;
 const byte cols = 8;
@@ -31,46 +31,46 @@ void keysInit() {
 void keysUpdate() {
 
   char key = keys.getKey();
-  if (key){
+  if (key) {
     Serial.println(key);
   }
 
-//  if (keys.getKeys()) {
-//    for (int i=0; i<LIST_MAX; i++) {
-//      if (keys.key[i].stateChanged) {
-//        byte charX = (keys.key[i].kchar-49)%8;
-//        byte charY = (keys.key[i].kchar-49)/8;
-//        switch (keys.key[i].kstate) {
-//          case PRESSED:         
-//            Serial.print(keys.key[i].kchar);
-//            Serial.print("\t");
-//            Serial.print(1);
-//            Serial.print("\t");
-//            Serial.print(charX);
-//            Serial.print(", ");
-//            Serial.println(charY);
-//            states[charX][charY] = 1;
-//            break;
-//          case HOLD:
-//            break;
-//          case RELEASED:
-//            Serial.print(keys.key[i].kchar);
-//            Serial.print("\t");
-//            Serial.print(0);
-//            Serial.print("\t");
-//            Serial.print(charX);
-//            Serial.print(", ");
-//            Serial.println(charY);
-//            states[charX][charY] = 0;
-//            break;
-//          case IDLE:
-//            break;
-//        }
-//      }
-//    }
-//  }
+  if (keys.getKeys()) {
+    for (int i = 0; i < LIST_MAX; i++) {
+      if (keys.key[i].stateChanged) {
+        byte charX = (keys.key[i].kchar - 49) % 8;
+        byte charY = (keys.key[i].kchar - 49) / 8;
+        switch (keys.key[i].kstate) {
+          case PRESSED:
+            Serial.print(keys.key[i].kchar);
+            Serial.print("\t");
+            Serial.print(1);
+            Serial.print("\t");
+            Serial.print(charX);
+            Serial.print(", ");
+            Serial.println(charY);
+            states[charX][charY] = 1;
+            break;
+          case HOLD:
+            break;
+          case RELEASED:
+            Serial.print(keys.key[i].kchar);
+            Serial.print("\t");
+            Serial.print(0);
+            Serial.print("\t");
+            Serial.print(charX);
+            Serial.print(", ");
+            Serial.println(charY);
+            states[charX][charY] = 0;
+            break;
+          case IDLE:
+            break;
+        }
+      }
+    }
+  }
 
-  
+
 }
 
 
@@ -91,11 +91,12 @@ void ledsInit() {
   leds.setIntensity(0);
   leds.fillScreen(0);
 
-  for (byte i = 0; i < 6; i++) {
-    leds.setPosition(i, panelArrange[i], 0);
-    leds.setRotation(i, 3);
-  }
-}  
+  // *** Comment out for TestBed
+  //  for (byte i = 0; i < 6; i++) {
+  //    leds.setPosition(i, panelArrange[i], 0);
+  //    leds.setRotation(i, 3);
+  //  }
+}
 
 //-----------------------------------------------------------------------------------------------------------
 //   POTENTIOMETERS
@@ -110,4 +111,107 @@ MuxIn pots = MuxIn(selPins[0], selPins[1], selPins[2], selPins[3], smoothEnable)
 void potsInit() {
   for (int i = 0; i < 2; i++) pots.attach(readPins[i]);
   pots.smoothAmount = .9;
+}
+
+//-----------------------------------------------------------------------------------------------------------
+//   COUNTER_LOGIC
+//-----------------------------------------------------------------------------------------------------------
+
+enum CounterSelect_Seq {Forward, PingPong, Brownian, Random};
+//enum CounterSelect_Seq {Forward = 16, PingPong = 15, Brownian = 2147483647, Random = 2147483647};
+
+
+class Counter
+{
+  public:
+    int masterCounter = 0;
+    int topCounter = 0;
+    int bottomCounter = 0;
+    int unifiedCounter = 0;
+
+    int topModulo = 0;
+    int bottomModulo = 0;
+    int unifiedModulo = 0;
+
+    CounterSelect_Seq topMode = Forward;
+    CounterSelect_Seq bottomMode = Forward;
+
+    void changeState(CounterSelect_Seq topM, CounterSelect_Seq botM)
+    {
+      topMode = topM;
+      bottomMode = botM;
+
+      if (topMode == bottomMode)
+      {
+        if (topMode == Forward)
+        {
+          topModulo = 0;
+          bottomModulo = 0;
+          unifiedModulo = 16;
+        }
+      }
+      masterCounter = 0;
+    }
+
+    void tick()
+    {
+      counter();
+      logic();
+    }
+
+  private:
+    int inputNodeXs[6] = {0, 1, 5, 6, 7, 8};
+    int inputNodeYs[6] = {0, 0, 0, 0, 0, 0};
+    int outputNodeXs[16] = {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7};
+    int outputNodeYs[16] = {1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2};
+
+    void counter()
+    {
+      masterCounter = (masterCounter + 1) % 2147483647;
+      topCounter = masterCounter % topModulo;
+      bottomCounter = masterCounter % bottomModulo;
+      unifiedCounter = masterCounter % unifiedModulo;
+    }
+    void logic()
+    {
+      if (topMode == bottomMode)
+      {
+        if (topMode == Forward)
+        {
+          for (int i = 0; i < 16; i++)
+          {
+            if (i == unifiedCounter)
+              leds.drawPixel(outputNodeYs[i], outputNodeXs[i], HIGH);
+            else
+              leds.drawPixel(outputNodeYs[i], outputNodeXs[i], LOW);
+          }
+        }
+      }
+    }
+};
+
+Counter c1 = Counter();
+
+//-----------------------------------------------------------------------------------------------------------
+//   TIMER
+//-----------------------------------------------------------------------------------------------------------
+
+unsigned long lastTime;
+unsigned long delTime;
+
+unsigned long accum;
+unsigned long rollOver;
+
+void timerUpdate()
+{
+  delTime = micros() - lastTime;
+  lastTime = micros();
+  Serial.println(delTime);
+
+  accum += delTime;
+  if (accum >= 100000)
+  {
+    accum -= 100000;
+    c1.tick();
+  }
 }

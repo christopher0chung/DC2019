@@ -1,8 +1,8 @@
 class C_Logic
 {
   public:
-    M_Node_Input inputs [INPUTS_MAX];
-    M_Node_Output outputs[OUTPUTS_MAX];
+    M_Node_Input *inputs [INPUTS_MAX];
+    M_Node_Output *outputs[OUTPUTS_MAX];
     int inputsCount = 0;
     int outputsCount = 0;
 
@@ -10,7 +10,7 @@ class C_Logic
     {
       if (inputsCount < INPUTS_MAX)
       {
-        inputs[inputsCount] = newInput;
+        inputs[inputsCount] = &newInput;
         inputsCount++;
       }
     }
@@ -19,7 +19,7 @@ class C_Logic
     {
       if (outputsCount < OUTPUTS_MAX)
       {
-        outputs[outputsCount] = newOutput;
+        outputs[outputsCount] = &newOutput;
         outputsCount++;
       }
     }

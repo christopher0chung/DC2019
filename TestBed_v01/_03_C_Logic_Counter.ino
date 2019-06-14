@@ -4,32 +4,32 @@ class C_Logic_Counter : C_Logic
     int counter_True;
     int counter_Unified;
 
-    void Prep(M_Node_Input inc, M_Node_Input dec, M_Node_Input rst, M_Node_Input hld, M_Node_Input pse, M_Node_Input clr,
-              M_Node_Output o0, M_Node_Output o1, M_Node_Output o2, M_Node_Output o3, M_Node_Output o4, M_Node_Output o5, M_Node_Output o6, M_Node_Output o7, M_Node_Output o8, M_Node_Output o9, M_Node_Output o10, M_Node_Output o11, M_Node_Output o12, M_Node_Output o13, M_Node_Output o14, M_Node_Output o15)
+    void Prep(M_Node_Input *inc, M_Node_Input *dec, M_Node_Input *rst, M_Node_Input *hld, M_Node_Input *pse, M_Node_Input *clr,
+              M_Node_Output *o0, M_Node_Output *o1, M_Node_Output *o2, M_Node_Output *o3, M_Node_Output *o4, M_Node_Output *o5, M_Node_Output *o6, M_Node_Output *o7, M_Node_Output *o8, M_Node_Output *o9, M_Node_Output *o10, M_Node_Output *o11, M_Node_Output *o12, M_Node_Output *o13, M_Node_Output *o14, M_Node_Output *o15)
     {
-      RegisterInput(inc);
-      RegisterInput(dec);
-      RegisterInput(rst);
-      RegisterInput(hld);
-      RegisterInput(pse);
-      RegisterInput(clr);
+      RegisterInput(*inc);
+      RegisterInput(*dec);
+      RegisterInput(*rst);
+      RegisterInput(*hld);
+      RegisterInput(*pse);
+      RegisterInput(*clr);
 
-      RegisterOutput(o0);
-      RegisterOutput(o1);
-      RegisterOutput(o2);
-      RegisterOutput(o3);
-      RegisterOutput(o4);
-      RegisterOutput(o5);
-      RegisterOutput(o6);
-      RegisterOutput(o7);
-      RegisterOutput(o8);
-      RegisterOutput(o9);
-      RegisterOutput(o10);
-      RegisterOutput(o11);
-      RegisterOutput(o12);
-      RegisterOutput(o13);
-      RegisterOutput(o14);
-      RegisterOutput(o15);
+      RegisterOutput(*o0);
+      RegisterOutput(*o1);
+      RegisterOutput(*o2);
+      RegisterOutput(*o3);
+      RegisterOutput(*o4);
+      RegisterOutput(*o5);
+      RegisterOutput(*o6);
+      RegisterOutput(*o7);
+      RegisterOutput(*o8);
+      RegisterOutput(*o9);
+      RegisterOutput(*o10);
+      RegisterOutput(*o11);
+      RegisterOutput(*o12);
+      RegisterOutput(*o13);
+      RegisterOutput(*o14);
+      RegisterOutput(*o15);
     }
 
     void Update()
@@ -63,9 +63,9 @@ class C_Logic_Counter : C_Logic
       for (int i = 0; i < outputsCount; i++)
       {
         if (i != counter_Unified)
-          outputs[i].TurnOff();
+          *outputs[i].TurnOff();
         else
-          outputs[i].TurnOn();
+          *outputs[i].TurnOn();
       }
     }
 

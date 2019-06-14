@@ -3,4 +3,6 @@ void setup() {
   ledsInit();
   potsInit(); 
   keysInit();
+
+  c1.changeState(Forward, Forward);
 }
