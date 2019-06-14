@@ -100,9 +100,9 @@ void ledsInit() {
 
 void ledsUpdate()
 {
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < rows; i++)
   {
-    for (int j = 0; j < 8; j++)
+    for (int j = 0; j < cols; j++)
     {
       leds.drawPixel(i, j, states[i][j]);
     }
@@ -125,7 +125,12 @@ void potsInit() {
 }
 
 //-----------------------------------------------------------------------------------------------------------
-//   Counter Stuff
+//   COUNTER
+//-----------------------------------------------------------------------------------------------------------
+//    In place of creating redundant data in node classes, direct index values are passed to the counter.
+//    The below arrays are the corresponding index values for both buttons and LEDs.
+//    To create and run the second Counter modules, initialize another Counter object (logically referred to
+//      as 'c2' and initialize it with it's corresponding button/led index values.
 //-----------------------------------------------------------------------------------------------------------
 #include "CounterLib.h"
 
@@ -139,6 +144,19 @@ Counter c1(inputNodeXs, inputNodeYs, outputNodeXs, outputNodeYs);
 
 //-----------------------------------------------------------------------------------------------------------
 //   TIMER
+//-----------------------------------------------------------------------------------------------------------
+//    TIMER needs to happen after COUNTER because TIMER 'ticks' the COUNTERS.
+//    lastTime is stored to calculate the time between updates - delTime.
+//    accum is the accumulated time since the last time.  This is used so that tick calls will be minimally
+//      affected by fluctuations in update times.
+//    rollOver is the time between ticks. This is the value intended to be changed via potentiometer.
+//      Because rollOver is relative to 'accum' changes in rollOver from update to update should minimally
+//      effect the sense of unintended interval dialation.
+//    Currently, written using micros() so that variations can be perceptible vial Serial.print.
+//    If additional COUNTERS are added, they will require unique 'accum' and 'rollOver'. No new 'delTime'
+//      is necessary.
+//    [NOTE] states' size does not matter to tick since it is passed by reference. c++ assumes passed arrays
+//      are passed by reference (and not value), so the array name can simply be passed.
 //-----------------------------------------------------------------------------------------------------------
 
 unsigned long lastTime;

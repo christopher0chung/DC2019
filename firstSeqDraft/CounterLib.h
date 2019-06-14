@@ -26,7 +26,9 @@ class Counter
     CounterSelect_Seq bottomMode;
 
     void changeState(CounterSelect_Seq, CounterSelect_Seq);
-    void tick(bool m[8][8]);
+    void changeTopState(CounterSelect_Seq);
+    void changeBottomState(CounterSelect_Seq);
+    void tick(bool m[][8]);
 
   private:
     int inputNodeXs[6];
@@ -37,7 +39,7 @@ class Counter
     bool pingOrPong;
 
     void counter();
-    void logic(bool m[8][8]);
+    void logic(bool m[][8]);
 };
 
 #endif
