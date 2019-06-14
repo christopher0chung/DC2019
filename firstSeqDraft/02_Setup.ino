@@ -4,5 +4,5 @@ void setup() {
   potsInit(); 
   keysInit();
 
-  c1.changeState(Forward, Forward);
+  c1.changeState(PingPong, PingPong);
 }

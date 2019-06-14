@@ -5,5 +5,6 @@ void loop() {
   keysUpdate();
 
   timerUpdate();
+  ledsUpdate();
   leds.write();
 }

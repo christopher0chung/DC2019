@@ -98,6 +98,17 @@ void ledsInit() {
   //  }
 }
 
+void ledsUpdate()
+{
+  for (int i = 0; i < 8; i++)
+  {
+    for (int j = 0; j < 8; j++)
+    {
+      leds.drawPixel(i, j, states[i][j]);
+    }
+  }
+}
+
 //-----------------------------------------------------------------------------------------------------------
 //   POTENTIOMETERS
 //-----------------------------------------------------------------------------------------------------------
@@ -114,83 +125,17 @@ void potsInit() {
 }
 
 //-----------------------------------------------------------------------------------------------------------
-//   COUNTER_LOGIC
+//   Counter Stuff
 //-----------------------------------------------------------------------------------------------------------
+#include "CounterLib.h"
 
-enum CounterSelect_Seq {Forward, PingPong, Brownian, Random};
-//enum CounterSelect_Seq {Forward = 16, PingPong = 15, Brownian = 2147483647, Random = 2147483647};
+int inputNodeXs[6] = {0, 1, 5, 6, 7, 8};
+int inputNodeYs[6] = {0, 0, 0, 0, 0, 0};
+int outputNodeXs[16] = {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7};
+int outputNodeYs[16] = {1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2};
 
+Counter c1(inputNodeXs, inputNodeYs, outputNodeXs, outputNodeYs);
 
-class Counter
-{
-  public:
-    int masterCounter = 0;
-    int topCounter = 0;
-    int bottomCounter = 0;
-    int unifiedCounter = 0;
-
-    int topModulo = 0;
-    int bottomModulo = 0;
-    int unifiedModulo = 0;
-
-    CounterSelect_Seq topMode = Forward;
-    CounterSelect_Seq bottomMode = Forward;
-
-    void changeState(CounterSelect_Seq topM, CounterSelect_Seq botM)
-    {
-      topMode = topM;
-      bottomMode = botM;
-
-      if (topMode == bottomMode)
-      {
-        if (topMode == Forward)
-        {
-          topModulo = 0;
-          bottomModulo = 0;
-          unifiedModulo = 16;
-        }
-      }
-      masterCounter = 0;
-    }
-
-    void tick()
-    {
-      counter();
-      logic();
-    }
-
-  private:
-    int inputNodeXs[6] = {0, 1, 5, 6, 7, 8};
-    int inputNodeYs[6] = {0, 0, 0, 0, 0, 0};
-    int outputNodeXs[16] = {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7};
-    int outputNodeYs[16] = {1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2};
-
-    void counter()
-    {
-      masterCounter = (masterCounter + 1) % 2147483647;
-      topCounter = masterCounter % topModulo;
-      bottomCounter = masterCounter % bottomModulo;
-      unifiedCounter = masterCounter % unifiedModulo;
-    }
-    void logic()
-    {
-      if (topMode == bottomMode)
-      {
-        if (topMode == Forward)
-        {
-          for (int i = 0; i < 16; i++)
-          {
-            if (i == unifiedCounter)
-              leds.drawPixel(outputNodeYs[i], outputNodeXs[i], HIGH);
-            else
-              leds.drawPixel(outputNodeYs[i], outputNodeXs[i], LOW);
-          }
-        }
-      }
-    }
-};
-
-Counter c1 = Counter();
 
 //-----------------------------------------------------------------------------------------------------------
 //   TIMER
@@ -206,12 +151,12 @@ void timerUpdate()
 {
   delTime = micros() - lastTime;
   lastTime = micros();
-  Serial.println(delTime);
+  //Serial.println(delTime);
 
   accum += delTime;
   if (accum >= 100000)
   {
     accum -= 100000;
-    c1.tick();
+    c1.tick(states);
   }
 }
