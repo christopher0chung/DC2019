@@ -2,7 +2,7 @@
 
 void loop() {
   pots.update();
-  keysUpdate();
+  //keysUpdate();
 
   timerUpdate();
 

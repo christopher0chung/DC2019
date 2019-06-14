@@ -53,6 +53,7 @@ void Counter::changeState(CounterSelect_Seq topM, CounterSelect_Seq botM)
     }
   }
   masterCounter = 0;
+  pingOrPong = true;
 }
 
 void Counter::changeTopState(CounterSelect_Seq newTopMode)

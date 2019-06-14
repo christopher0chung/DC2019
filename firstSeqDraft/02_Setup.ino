@@ -11,4 +11,6 @@ void setup() {
   //    in the constructor in addition to meaningfully residing in 'changeState'.
 
   c1.changeState(PingPong, PingPong);
+
+  delay(2000);
 }
