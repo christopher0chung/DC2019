@@ -1,0 +1,11 @@
+Optimize Write to Screen Function
+
+
+Buttons add function to check to see if vals != lastVals
+buttons
+
+buttons.updateLastVals
+      buttons.lastVals[piano[i].key] = buttons.vals[piano[i].key];
+
+buttons.hasChanged
+    if (buttons.vals[piano[i].key] != buttons.lastVals[piano[i].key]) {

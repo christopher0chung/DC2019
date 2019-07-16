@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map For CD4021
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+CD4021	KEYWORD1	CD4021
+ShiftReg	KEYWORD1	ShiftReg
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+chips	KEYWORD2
+registers	KEYWORDS2
+vals	KEYWORD2
+lastVals	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
