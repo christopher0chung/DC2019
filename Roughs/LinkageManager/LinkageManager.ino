@@ -143,8 +143,8 @@ void writeToBuffer() {
 
 driverStates indexToState(int index)
 {
-  if (index == 24){
-    if (keys[24].lastState == 0 && keys[24].state == 1)
+  if (index >= 24 && index <= 56 || index == 89){
+    if (keys[index].lastState == 0 && keys[index].state == 1)
     return driveHigh;
     else if (... drive Low
     else noDrive;
