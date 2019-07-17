@@ -4,15 +4,15 @@
 enum driverStates {noDrive, driveLow, driveHigh};
 
 struct link {
-  byte driverIndex;
-  byte bufferIndex;
+  int driverIndex;
+  int bufferIndex;
   bool filled()
   {
     if (driverIndex != 999 && bufferIndex != 999)
       return true;
     else return false;
-  }
-}
+  };
+};
 
 link newLinkBuffer = {999, 999};
 
@@ -72,7 +72,7 @@ void linkInputCheck() {
 }
 
 void readLink() {
-  if (buttons.vals[299] == 1) {
+  if (buttons.vals[299] == 1) {   /*patch mode and perform mode -- not holding patch down*/
     for (int i = 0; i < buttonsMax; i++)
     {
       if (buttons.vals[i] == 0)
@@ -91,6 +91,7 @@ void readLink() {
 }
 
 bool inputCheck(byte index) {
+  /*if (index == 4 || index ==... */
   return true;
 }
 
@@ -116,12 +117,11 @@ void removeLink() {
   }
 
   for (int i = indexToClear; i < linkagesMax; i++) {
-    if (i == 127)
+    if (i == linkagesMax - 1)
       linkages[i] = {999, 999};
     else
       linkages[i] = linkages[i + 1];
   }
-
   activeLinkageCount--;
   clearNewLinkBuffer();
 }
@@ -143,7 +143,15 @@ void writeToBuffer() {
 
 driverStates indexToState(int index)
 {
+  if (index == 24){
+    if (keys[24].lastState == 0 && keys[24].state == 1)
+    return driveHigh;
+    else if (... drive Low
+    else noDrive;
+  }
+  
   return noDrive;
+  
 }
 
 void applyBuffer() {
