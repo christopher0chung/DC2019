@@ -24,6 +24,8 @@ class MuxIn {
     void attach(byte _pin);                   // Associate microcontroller pin with a Modi multiplexer
     void update();                                            // Capture readings from all controllers
     int smooth(int data, float filterVal, float smoothedVal);  
+    bool hasChanged(int loc); 
+    void updateLastVals(int loc);  
 
   private:
 };

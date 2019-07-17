@@ -3,7 +3,7 @@
 
 MuxIn::MuxIn(byte _selPinA, byte _selPinB, byte _selPinC, byte _anaPin1, byte _anaPin2) {
   numMux = 0;                                           // This number increases by 1 with each attach() method used        
-  smoothAmount = .8;                                    // Default amount of smoothing
+  smoothAmount = .9;                                    // Default amount of smoothing
   
   selPins[0] = _selPinA;                                // Assign selection pins to variables
   selPins[1] = _selPinB;
@@ -63,4 +63,17 @@ int MuxIn::smooth(int data, float filterVal, float smoothedVal) {
   else if (filterVal <= 0) filterVal = 0;
   smoothedVal = (data * (1 - filterVal)) + (smoothedVal *  filterVal);
   return (int)smoothedVal;
+}
+
+bool MuxIn::hasChanged(int loc)  {
+  if (vals[loc] != lastVals[loc]) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+void MuxIn::updateLastVals(int loc) {
+  lastVals[loc] = vals[loc];
 }

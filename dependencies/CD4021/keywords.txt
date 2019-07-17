@@ -17,6 +17,7 @@ chips	KEYWORD2
 registers	KEYWORDS2
 vals	KEYWORD2
 lastVals	KEYWORD2
+updateLastVals	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
