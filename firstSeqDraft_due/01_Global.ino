@@ -9,39 +9,49 @@ Adafruit_AlphaNum4 screen = Adafruit_AlphaNum4();
 void screenInit() {
   screen.begin(0x70);
   screen.setBrightness(0);
+  screenClear();
   screen.writeDisplay();
 }
 
-void screenPrint(int value) {
-  char buff[4];
-  String screenVal = String(value);
-  screenVal.toCharArray(buff, 4);
-
+void  screenClear() {
   for (int i = 0; i < 4; i++) {
-    screen.writeDigitAscii(i, ' ');
+    screen.writeDigitAscii(0, ' ');
   }
+}
 
-  if (screenVal.length() == 1) {
+void screenPrint(int val) {
+  String text = String(val);
+  screenPrint(text);
+}
+
+void screenPrint(String text) {  // buff[4] doesn't work and i have no clue why
+  char buff[5];
+  text.toCharArray(buff, 5);
+  if (text.length() == 1) {
+    screen.writeDigitAscii(0, ' ');
+    screen.writeDigitAscii(1, ' ');
+    screen.writeDigitAscii(2, ' ');
     screen.writeDigitAscii(3, buff[0]);
   }
-
-  if (screenVal.length() == 2) {
+  if (text.length() == 2) {
+    screen.writeDigitAscii(0, ' ');
+    screen.writeDigitAscii(1, ' ');
     screen.writeDigitAscii(2, buff[0]);
     screen.writeDigitAscii(3, buff[1]);
   }
-
-  if (screenVal.length() == 3) {
+  if (text.length() == 3) {
+    screen.writeDigitAscii(0, ' ');
     screen.writeDigitAscii(1, buff[0]);
     screen.writeDigitAscii(2, buff[1]);
     screen.writeDigitAscii(3, buff[2]);
   }
-
-  if (screenVal.length() == 4) {
+  if (text.length() == 4) {
     screen.writeDigitAscii(0, buff[0]);
     screen.writeDigitAscii(1, buff[1]);
     screen.writeDigitAscii(2, buff[2]);
     screen.writeDigitAscii(3, buff[3]);
-  }
+  }  
+  screen.writeDisplay();
 }
 
 //-----------------------------------------------------------------------------------------------------------
@@ -57,7 +67,7 @@ ShiftReg buttons = ShiftReg(dataPin, latchPin, clockPin);
 
 void testButtons() {
   for (int loc = 0; loc < 304; loc++) {
-    if (buttons.vals[loc] != buttons.lastVals[loc]) {
+    if (buttons.hasChanged(loc)) {
       if (buttons.vals[loc] == 1) {
         Serial.print("Key");
         Serial.print("\t");
@@ -65,7 +75,7 @@ void testButtons() {
         Serial.print(loc);
         Serial.println();
       }
-      buttons.lastVals[loc] = buttons.vals[loc];
+      buttons.updateLastVals(loc);
     }
   }
 }
@@ -81,19 +91,19 @@ MuxIn pots = MuxIn(selPins[0], selPins[1], selPins[2], A6, A7);
 
 void potsInit() {
   for (int i = 0; i < 3; i++) pots.attach(readPins[i]);
-  pots.smoothAmount = .9;
+  for (int i = 0; i < 200; i++)pots.update();
 }
 
 void testPots() {
   for (int loc = 0; loc < 26; loc++) {
-    if (pots.vals[loc] != pots.lastVals[loc]) {
+    if (pots.hasChanged(loc)) {
       Serial.print("Pot");
       Serial.print("\t");
       Serial.print("loc:");
       Serial.print(loc);
       Serial.print("\t");
       Serial.println(pots.vals[loc]);
-      pots.lastVals[loc] = pots.vals[loc];
+      pots.updateLastVals(loc);
       screenPrint(pots.vals[loc]);
     }
   }

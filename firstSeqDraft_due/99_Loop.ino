@@ -11,8 +11,7 @@ void loop() {
   autoTog();
   commandLeft();
 
- commandPotsUpdate();
+  commandPotsUpdate();
 
   leds.write();
-  screen.writeDisplay();
 }

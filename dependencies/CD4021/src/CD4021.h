@@ -16,7 +16,9 @@ class ShiftReg {
     bool lastVals[304];
   
     void update();   
-    byte shiftIn(byte _data, byte _clock);     
+    byte shiftIn(byte _data, byte _clock);  
+    bool hasChanged(int loc); 
+    void updateLastVals(int loc);  
 
   private:
 

@@ -20,6 +20,7 @@ muxChannels	KEYWORD2
 getReading	KEYWORD2
 slideType	KEYWORD2
 vals	KEYWORD2
+updateLastVals KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -52,3 +52,16 @@ byte ShiftReg::shiftIn(byte _data, byte _clock) {
   }
   return data;  
 }
+
+bool ShiftReg::hasChanged(int loc)  {
+  if (vals[loc] != lastVals[loc]) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+void ShiftReg::updateLastVals(int loc) {
+  lastVals[loc] = vals[loc];
+}

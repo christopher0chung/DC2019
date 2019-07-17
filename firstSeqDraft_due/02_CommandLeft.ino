@@ -16,6 +16,7 @@ noteNode piano[25] = {
 };
 
 int pitchAdjust[4];
+byte velAdjust[4] = {127, 127, 127, 127};
 
 unsigned long previousMillis = 0;
 bool tog = 0;
@@ -31,13 +32,14 @@ void autoTog() {
 
 void commandLeft() {
   for (int i = 0; i < 25; i++) {
-    if (buttons.vals[piano[i].key] != buttons.lastVals[piano[i].key]) {
+    if (buttons.hasChanged(piano[i].key)) {
       if (buttons.vals[piano[i].key] == 1) {
         if (piano[i].state == 1) {
           usbMIDI.sendNoteOff(piano[i].note, 0, 1);
         }
         piano[i].note = 48 + i + pitchAdjust[0];
-        usbMIDI.sendNoteOn(piano[i].note, 127, 1);
+        int vel = velAdjust[0];
+        usbMIDI.sendNoteOn(piano[i].note, vel, 1);
         leds.drawPixel(piano[i].ledx, piano[i].ledy, 1);
       }
       else {
@@ -46,7 +48,7 @@ void commandLeft() {
           leds.drawPixel(piano[i].ledx, piano[i].ledy, 0);
         }
       }
-      buttons.lastVals[piano[i].key] = buttons.vals[piano[i].key];
+      buttons.updateLastVals(piano[i].key);
     }
   }
 
@@ -57,11 +59,12 @@ void commandLeft() {
           usbMIDI.sendNoteOff(piano[i].note, 0, 1);
         }
         piano[i].note = 48 + i + pitchAdjust[0];
-        usbMIDI.sendNoteOn(piano[i].note, 127, 1);
+        int vel = velAdjust[0];
+        usbMIDI.sendNoteOn(piano[i].note, vel, 1);
         leds.drawPixel(piano[i].ledx, piano[i].ledy, 1);
       } 
       else {
-        if (buttons.vals[piano[i].key] = 0) {
+        if (buttons.vals[piano[i].key] == 0) {
           usbMIDI.sendNoteOff(piano[i].note, 0, 1);
           leds.drawPixel(piano[i].ledx, piano[i].ledy, 0);
         }
