@@ -1,3 +1,10 @@
-Optimize Write to Screen Function
+write fancy for loop for screenPrint function.
 
+add "catching" structure that makes it so pot values don't SNAP from one point to another when turned. they will have to pass over the original value before changes can be made. this only applies to pots that are used to control multiple values like the comman pots located on the bottom right of the system.
+
+input check and output check
+make list of inputs
+make list of outputs
+
+make pdf of the illustrator document 
 

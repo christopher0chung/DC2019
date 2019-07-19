@@ -8,7 +8,7 @@ void loop() {
   //    testButtons();
   //    testPots();
 
-  autoTog();
+//  autoTog();
   commandLeft();
 
   commandPotsUpdate();
