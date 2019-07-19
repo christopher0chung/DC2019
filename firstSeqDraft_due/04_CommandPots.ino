@@ -54,7 +54,14 @@ void commandPotsUpdate() {
           break;
 
         case 1: {
+            int noteLength = pots.vals[potArray[i]];
+            noteLength = map(noteLength, 5, 150, 10, 3000);
+            noteLength = constrain(noteLength, 10, 3000);
 
+            if (noteLength != lengthAdjust[i]) {
+              lengthAdjust[i] = noteLength;
+              screenPrint(noteLength);
+            }
           }
           break;
 

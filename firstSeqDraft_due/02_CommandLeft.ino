@@ -6,14 +6,15 @@ struct pianoNode {
   bool lastState;
   byte note;
   unsigned long noteStartTime;
+  bool lengthMode;
 };
 
 pianoNode piano[25] = {
-  {85, 32, 3, 0, 0, 0, 0},  {95, 32, 2, 0, 0, 0, 0},  {86, 33, 3, 0, 0, 0, 0},  {82, 33, 2, 0, 0, 0, 0},  {91, 34, 3, 0, 0, 0, 0},
-  {87, 35, 3, 0, 0, 0, 0},  {90, 35, 2, 0, 0, 0, 0},  {81, 36, 3, 0, 0, 0, 0},  {83, 36, 2, 0, 0, 0, 0},  {105, 37, 3, 0, 0, 0, 0},
-  {55, 37, 2, 0, 0, 0, 0},  {50, 38, 3, 0, 0, 0, 0},  {47, 39, 3, 0, 0, 0, 0},  {57, 39, 2, 0, 0, 0, 0},  {74, 32, 7, 0, 0, 0, 0},
-  {65, 32, 6, 0, 0, 0, 0},  {41, 33, 7, 0, 0, 0, 0},  {51, 34, 7, 0, 0, 0, 0},  {63, 34, 6, 0, 0, 0, 0},  {59, 35, 7, 0, 0, 0, 0},
-  {68, 35, 6, 0, 0, 0, 0},  {72, 36, 7, 0, 0, 0, 0},  {70, 36, 6, 0, 0, 0, 0},  {77, 37, 7, 0, 0, 0, 0},  {78, 38, 7, 0, 0, 0, 0},
+  {85, 32, 3, 0, 0, 0, 0, 0},  {95, 32, 2, 0, 0, 0, 0, 0},  {86, 33, 3, 0, 0, 0, 0, 0},  {82, 33, 2, 0, 0, 0, 0, 0},  {91, 34, 3, 0, 0, 0, 0, 0},
+  {87, 35, 3, 0, 0, 0, 0, 0},  {90, 35, 2, 0, 0, 0, 0, 0},  {81, 36, 3, 0, 0, 0, 0, 0},  {83, 36, 2, 0, 0, 0, 0, 0},  {105, 37, 3, 0, 0, 0, 0, 0},
+  {55, 37, 2, 0, 0, 0, 0, 0},  {50, 38, 3, 0, 0, 0, 0, 0},  {47, 39, 3, 0, 0, 0, 0, 0},  {57, 39, 2, 0, 0, 0, 0, 0},  {74, 32, 7, 0, 0, 0, 0, 0},
+  {65, 32, 6, 0, 0, 0, 0, 0},  {41, 33, 7, 0, 0, 0, 0, 0},  {51, 34, 7, 0, 0, 0, 0, 0},  {63, 34, 6, 0, 0, 0, 0, 0},  {59, 35, 7, 0, 0, 0, 0, 0},
+  {68, 35, 6, 0, 0, 0, 0, 0},  {72, 36, 7, 0, 0, 0, 0, 0},  {70, 36, 6, 0, 0, 0, 0, 0},  {77, 37, 7, 0, 0, 0, 0, 0},  {78, 38, 7, 0, 0, 0, 0, 0},
 };
 
 byte velAdjust[4] = {127, 127, 127, 127};
@@ -42,54 +43,67 @@ void commandLeft() {
           usbMIDI.sendNoteOff(piano[i].note, 0, 1);
         }
 
+        if (lengthAdjust[0] > 15) {
+          if (piano[i].lengthMode == 1) {
+            usbMIDI.sendNoteOff(piano[i].note, 0, 1);
+          }
+          piano[i].noteStartTime = millis();
+          piano[i].lengthMode = 1;
+        }
+
         piano[i].note = 48 + i + pitchAdjust[0];
         int vel = velAdjust[0];
-
-        if (lengthAdjust[0] > 20) {
-          piano[i].noteStartTime = millis();
-        }
         usbMIDI.sendNoteOn(piano[i].note, vel, 1);
         leds.drawPixel(piano[i].ledx, piano[i].ledy, 1);
       }
 
       else {
-        if (piano[i].state == 0) {
+
+        if (piano[i].state == 0 && piano[i].lengthMode == 0) {
           usbMIDI.sendNoteOff(piano[i].note, 0, 1);
           leds.drawPixel(piano[i].ledx, piano[i].ledy, 0);
         }
+
 
       }
       buttons.updateLastVals(piano[i].key);
     }
 
-    checkNoteEndTime(piano[i], lengthAdjust[0]);
+    piano[i].lengthMode = checkNoteEndTime(piano[i], lengthAdjust[0]);
   }
 
-  for (int i = 0; i < 25; i++) {
-    if (piano[i].state != piano[i].lastState) {
-      if (piano[i].state == 1) {
-        if (buttons.vals[piano[i].key] == 1) {
-          usbMIDI.sendNoteOff(piano[i].note, 0, 1);
-        }
-        piano[i].note = 48 + i + pitchAdjust[0];
-        int vel = velAdjust[0];
-        usbMIDI.sendNoteOn(piano[i].note, vel, 1);
-        leds.drawPixel(piano[i].ledx, piano[i].ledy, 1);
-      }
-      else {
-        if (buttons.vals[piano[i].key] == 0) {
-          usbMIDI.sendNoteOff(piano[i].note, 0, 1);
-          leds.drawPixel(piano[i].ledx, piano[i].ledy, 0);
-        }
-      }
-      piano[i].lastState = piano[i].state;
-    }
-  }
+  //  for (int i = 0; i < 25; i++) {
+  //    if (piano[i].state != piano[i].lastState) {
+  //      if (piano[i].state == 1) {
+  //        if (buttons.vals[piano[i].key] == 1) {
+  //          usbMIDI.sendNoteOff(piano[i].note, 0, 1);
+  //        }
+  //        piano[i].note = 48 + i + pitchAdjust[0];
+  //        int vel = velAdjust[0];
+  //        usbMIDI.sendNoteOn(piano[i].note, vel, 1);
+  //        leds.drawPixel(piano[i].ledx, piano[i].ledy, 1);
+  //      }
+  //      else {
+  //        if (buttons.vals[piano[i].key] == 0) {
+  //          usbMIDI.sendNoteOff(piano[i].note, 0, 1);
+  //          leds.drawPixel(piano[i].ledx, piano[i].ledy, 0);
+  //        }
+  //      }
+  //      piano[i].lastState = piano[i].state;
+  //    }
+  //  }
 }
 
-void checkNoteEndTime(struct pianoNode node, int noteLength) {
-  if (millis() - node.noteStartTime > noteLength) {
-    leds.drawPixel(node.ledx, node.ledy, 0);
-    usbMIDI.sendNoteOff(node.note, 0, 1);
+bool checkNoteEndTime(struct pianoNode node, int noteLength) {
+  if (node.lengthMode == 1) {
+    if (node.state == 0) {
+      if (millis() - node.noteStartTime > noteLength && buttons.vals[node.key] != 1) {
+        usbMIDI.sendNoteOff(node.note, 0, 1);
+        
+        leds.drawPixel(node.ledx, node.ledy, 0);
+        return 0;
+      }
+    }
+    return 1;
   }
 }

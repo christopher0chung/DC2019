@@ -8,3 +8,5 @@ make list of outputs
 
 make pdf of the illustrator document 
 
+variable note length function working pretty well except for when the potentiometer value goes from "active" to "inactive" length mode while a note is currently active. this creates a repeat note off message from the note.
+
