@@ -1,132 +1,47 @@
-//-----------------------------------------------------------------------------------------------------------
-//   SCREEN
-//-----------------------------------------------------------------------------------------------------------
-#include <Wire.h>
-#include "Adafruit_LEDBackpack.h"
+struct basicNode {
+  int  key;
+  byte ledx;
+  byte ledy;
+};
 
-Adafruit_AlphaNum4 screen = Adafruit_AlphaNum4();
+struct patchNode {
+  int index;
+  byte ledx;
+  byte ledy;
+  bool state;
+  bool lastState; 
+  bool inputOrOutput;
+};
 
-void screenInit() {
-  screen.begin(0x70);
-  screen.setBrightness(0);
-  screenClear();
-  screen.writeDisplay();
-}
+struct isPatchedNode {
+  
+};
 
-void  screenClear() {
-  for (int i = 0; i < 4; i++) {
-    screen.writeDigitAscii(0, ' ');
-  }
-}
+struct noteNode {
+  byte index;
+  byte ledx;
+  byte ledy;
+  bool state;
+  bool lastState;
+  byte note;
+  unsigned long noteStartTime;
+  bool lengthMode;
+};
 
-void screenPrint(int val) {
-  String text = String(val);
-  screenPrint(text);
-}
+noteNode piano[25] = {
+  {85, 32, 3, 0, 0, 0, 0, 0},  {95, 32, 2, 0, 0, 0, 0, 0},  {86, 33, 3, 0, 0, 0, 0, 0},  {82, 33, 2, 0, 0, 0, 0, 0},  {91, 34, 3, 0, 0, 0, 0, 0},
+  {87, 35, 3, 0, 0, 0, 0, 0},  {90, 35, 2, 0, 0, 0, 0, 0},  {81, 36, 3, 0, 0, 0, 0, 0},  {83, 36, 2, 0, 0, 0, 0, 0},  {105, 37, 3, 0, 0, 0, 0, 0},
+  {55, 37, 2, 0, 0, 0, 0, 0},  {50, 38, 3, 0, 0, 0, 0, 0},  {47, 39, 3, 0, 0, 0, 0, 0},  {57, 39, 2, 0, 0, 0, 0, 0},  {74, 32, 7, 0, 0, 0, 0, 0},
+  {65, 32, 6, 0, 0, 0, 0, 0},  {41, 33, 7, 0, 0, 0, 0, 0},  {51, 34, 7, 0, 0, 0, 0, 0},  {63, 34, 6, 0, 0, 0, 0, 0},  {59, 35, 7, 0, 0, 0, 0, 0},
+  {68, 35, 6, 0, 0, 0, 0, 0},  {72, 36, 7, 0, 0, 0, 0, 0},  {70, 36, 6, 0, 0, 0, 0, 0},  {77, 37, 7, 0, 0, 0, 0, 0},  {78, 38, 7, 0, 0, 0, 0, 0}
+};
 
-void screenPrint(String text) {  // buff[4] doesn't work and i have no clue why
-  char buff[5];
-  text.toCharArray(buff, 5);
-  if (text.length() == 1) {
-    screen.writeDigitAscii(0, ' ');
-    screen.writeDigitAscii(1, ' ');
-    screen.writeDigitAscii(2, ' ');
-    screen.writeDigitAscii(3, buff[0]);
-  }
-  if (text.length() == 2) {
-    screen.writeDigitAscii(0, ' ');
-    screen.writeDigitAscii(1, ' ');
-    screen.writeDigitAscii(2, buff[0]);
-    screen.writeDigitAscii(3, buff[1]);
-  }
-  if (text.length() == 3) {
-    screen.writeDigitAscii(0, ' ');
-    screen.writeDigitAscii(1, buff[0]);
-    screen.writeDigitAscii(2, buff[1]);
-    screen.writeDigitAscii(3, buff[2]);
-  }
-  if (text.length() == 4) {
-    screen.writeDigitAscii(0, buff[0]);
-    screen.writeDigitAscii(1, buff[1]);
-    screen.writeDigitAscii(2, buff[2]);
-    screen.writeDigitAscii(3, buff[3]);
-  }  
-  screen.writeDisplay();
-}
+noteNode tuners[14] = {
+  {69, 38, 6, 0, 0, 0, 0, 0},  {56, 40, 1, 0, 0, 0, 0, 0},  {76, 41, 1, 0, 0, 0, 0, 0},  {40, 42, 1, 0, 0, 0, 0, 0},  {53, 43, 1, 0, 0, 0, 0, 0},
+  {45, 44, 1, 0, 0, 0, 0, 0},  {54, 45, 1, 0, 0, 0, 0, 0},  {52, 46, 1, 0, 0, 0, 0, 0},  {44, 47, 1, 0, 0, 0, 0, 0},  { 3, 40, 3, 0, 0, 0, 0, 0},
+  { 7, 41, 3, 0, 0, 0, 0, 0},  {15, 42, 3, 0, 0, 0, 0, 0},  { 2, 43, 3, 0, 0, 0, 0, 0},  {23, 44, 3, 0, 0, 0, 0, 0} 
+};
 
-//-----------------------------------------------------------------------------------------------------------
-//   BUTTONS
-//-----------------------------------------------------------------------------------------------------------
-#include <CD4021.h>
-
-byte dataPin = 9;
-byte latchPin = 8;
-byte clockPin = 7;
-
-ShiftReg buttons = ShiftReg(dataPin, latchPin, clockPin);
-
-void testButtons() {
-  for (int loc = 0; loc < 304; loc++) {
-    if (buttons.hasChanged(loc)) {
-      if (buttons.vals[loc] == 1) {
-        Serial.print("Key");
-        Serial.print("\t");
-        Serial.print("loc:");
-        Serial.print(loc);
-        Serial.println();
-      }
-      buttons.updateLastVals(loc);
-    }
-  }
-}
-
-//-----------------------------------------------------------------------------------------------------------
-//   POTENTIOMETERS
-//-----------------------------------------------------------------------------------------------------------
-#include <CD4067.h>
-
-byte selPins[3] = {15, 16, 17};
-byte readPins[3] = {A3, A4, A5 };
-MuxIn pots = MuxIn(selPins[0], selPins[1], selPins[2], A6, A7);
-
-void potsInit() {
-  for (int i = 0; i < 3; i++) pots.attach(readPins[i]);
-  for (int i = 0; i < 200; i++)pots.update();
-}
-
-void testPots() {
-  for (int loc = 0; loc < 26; loc++) {
-    if (pots.hasChanged(loc)) {
-      Serial.print("Pot");
-      Serial.print("\t");
-      Serial.print("loc:");
-      Serial.print(loc);
-      Serial.print("\t");
-      Serial.println(pots.vals[loc]);
-      pots.updateLastVals(loc);
-      screenPrint(pots.vals[loc]);
-    }
-  }
-}
-
-//-----------------------------------------------------------------------------------------------------------
-//   LEDS
-//-----------------------------------------------------------------------------------------------------------
-#include <SPI.h>
-#include <Adafruit_GFX.h>
-#include <Max72xxPanel.h>
-
-byte csPin = 20;
-byte horiDisplays = 6;
-byte vertiDisplays = 1;
-byte panelArrange[6] = {5, 4, 0, 1, 2, 3};
-Max72xxPanel leds = Max72xxPanel(csPin, horiDisplays, vertiDisplays);
-
-void ledsInit() {
-  leds.setIntensity(0);
-  leds.fillScreen(0);
-  for (byte i = 0; i < 6; i++) {
-    leds.setPosition(i, panelArrange[i], 0);
-    leds.setRotation(i, 3);
-  }
-}
+byte velAdjust[4] = {127, 127, 127, 127};
+unsigned int lengthAdjust[4] = {0, 0, 0, 0};
+int pitchAdjust[4] = {0, 0, 0, 0};
