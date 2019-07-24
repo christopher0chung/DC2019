@@ -2,11 +2,10 @@ write fancy for loop for screenPrint function.
 
 add "catching" structure that makes it so pot values don't SNAP from one point to another when turned. they will have to pass over the original value before changes can be made. this only applies to pots that are used to control multiple values like the comman pots located on the bottom right of the system.
 
-input check and output check
-make list of inputs
-make list of outputs
-
 make pdf of the illustrator document 
 
 variable note length function working pretty well except for when the potentiometer value goes from "active" to "inactive" length mode while a note is currently active. this creates a repeat note off message from the note.
 
+what happens when a module output is patched to an input of the same module?
+
+breaking out of loops or long ifs is a good idea even if it means a one input of dual input reading might be read on the next loop
