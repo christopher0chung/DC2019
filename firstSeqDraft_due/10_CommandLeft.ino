@@ -37,7 +37,6 @@ void commandLeft() {
       }
 
       else {
-
         if (piano[i].state == 0 && piano[i].lengthMode == 0) {
           usbMIDI.sendNoteOff(piano[i].note, 0, 1);
           leds.drawPixel(piano[i].ledx, piano[i].ledy, 0);

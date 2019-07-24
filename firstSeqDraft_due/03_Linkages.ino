@@ -109,7 +109,7 @@ void linkInputCheck() {
 }
 
 void readLink() {
-  if (buttons.vals[299] == 1) {   /*patch mode and perform mode -- not holding patch down*/
+//  if (buttons.vals[299] == 1) {   /*patch mode and perform mode -- not holding patch down*/
     for (int i = 0; i < buttonsMax; i++)
     {
       if (buttons.vals[i] == 0)
@@ -173,6 +173,7 @@ void removeLink() {
 }
 
 void writeToBuffer() {
+  // only do this is activeLinkageCount > 1 otherwise error
   for (int i = 0; i < activeLinkageCount; i++) {
     if (indexToState(linkages[i].bufferIndex) == noDrive)
       continue;
