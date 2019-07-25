@@ -8,17 +8,23 @@ class ShiftReg {
 
     byte chips;
     byte registers;
-   
+      
     byte dataPin;
     byte latchPin;
     byte clockPin;
+
     bool vals[304];
     bool lastVals[304];
   
-    void update();   
+    void update();  
+
     byte shiftIn(byte _data, byte _clock);  
-    bool hasChanged(int loc); 
-    void updateLastVals(int loc);  
+
+    bool hasChanged(int i);
+    bool risingEdge(int i);
+    bool fallingEdge(int i); 
+
+    void updateLastVal(int i);  
 
   private:
 

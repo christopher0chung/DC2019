@@ -50,7 +50,7 @@ void screenPrint(String text) {  // buff[4] doesn't work and i have no clue why
     screen.writeDigitAscii(1, buff[1]);
     screen.writeDigitAscii(2, buff[2]);
     screen.writeDigitAscii(3, buff[3]);
-  }  
+  }
   screen.writeDisplay();
 }
 
@@ -66,16 +66,33 @@ byte clockPin = 7;
 ShiftReg buttons = ShiftReg(dataPin, latchPin, clockPin);
 
 void testButtons() {
-  for (int loc = 0; loc < 304; loc++) {
-    if (buttons.hasChanged(loc)) {
-      if (buttons.vals[loc] == 1) {
-        Serial.print("Key");
-        Serial.print("\t");
-        Serial.print("loc:");
-        Serial.print(loc);
-        Serial.println();
-      }
-      buttons.updateLastVals(loc);
+  for (int i = 0; i < 304; i++) {
+    if (buttons.risingEdge(i)) {
+
+      Serial.print("Key");
+      Serial.print("\t");
+      Serial.print("index:");
+      Serial.print(i);
+      Serial.print("\t");
+
+//      String patchType = 0;
+//
+//      switch (nodes.[i].type) {
+//        case 0:
+//          patchType = "non-patch";
+//        case 1:
+//          patchType = "input";
+//        case 2:
+//          patchType = "special input";
+//        case 3:
+//          patchType = "output";
+//
+//      }
+
+      Serial.print(nodes[i].type);
+      Serial.println();
+
+      buttons.updateLastVal(i);
     }
   }
 }
@@ -95,16 +112,16 @@ void potsInit() {
 }
 
 void testPots() {
-  for (int loc = 0; loc < 26; loc++) {
-    if (pots.hasChanged(loc)) {
+  for (int i = 0; i < 26; i++) {
+    if (pots.hasChanged(i)) {
       Serial.print("Pot");
       Serial.print("\t");
-      Serial.print("loc:");
-      Serial.print(loc);
+      Serial.print("index:");
+      Serial.print(i);
       Serial.print("\t");
-      Serial.println(pots.vals[loc]);
-      pots.updateLastVals(loc);
-      screenPrint(pots.vals[loc]);
+      Serial.println(pots.vals[i]);
+      pots.updateLastVals(i);
+      screenPrint(pots.vals[i]);
     }
   }
 }

@@ -2,16 +2,20 @@
 #include "CD4021.h"
 
 ShiftReg::ShiftReg(byte _dataPin, byte _latchPin, byte _clockPin) {
+
   chips = 38;
   registers = 8;
   
   dataPin = _dataPin;
   latchPin = _latchPin;
   clockPin = _clockPin;
+
   pinMode(dataPin, INPUT);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
+
 }
+
 
 void ShiftReg::update() {
 
@@ -28,40 +32,76 @@ void ShiftReg::update() {
 
       int loc = r + c*8;
 
-      if (regVal & (1 << r) ) {
+      if (regVal & (1 << r) ) 
         vals[loc] = 1;
-      }
-      else {
+      else 
         vals[loc] = 0;
-      }
       
     }
   }
 }
 
+
 byte ShiftReg::shiftIn(byte _data, byte _clock) {
+
   byte data = 0;
+
   for (int i = 7; i >= 0; i--) {
+
     digitalWrite(_clock, 0);
     delayMicroseconds(2);
     int temp = digitalRead(_data);
-    if (temp) {
+
+    if (temp)
       data = data | (1 << i);
-    }
+  
     digitalWrite(_clock, 1);
+
   }
+
   return data;  
+
 }
 
-bool ShiftReg::hasChanged(int loc)  {
-  if (vals[loc] != lastVals[loc]) {
+
+bool ShiftReg::hasChanged(int i)  {
+
+  if (vals[i] != lastVals[i]) 
     return 1;
-  }
-  else {
+  else 
     return 0;
-  }
+
 }
 
-void ShiftReg::updateLastVals(int loc) {
-  lastVals[loc] = vals[loc];
+
+bool ShiftReg::risingEdge(int i)  {
+
+  if (vals[i] != lastVals[i]) 
+    if (vals[i] == 1) 
+      return 1;
+    else 
+      return 0;
+  else 
+    return 0;
+
+}
+
+
+bool ShiftReg::fallingEdge(int i)  {
+
+  if (vals[i] != lastVals[i]) 
+    if (vals[i] == 0) 
+      return 1;
+    else
+      return 0;
+  else 
+    return 0;
+
+}
+
+
+void ShiftReg::updateLastVal(int i) {
+
+  lastVals[i] = vals[i];
+
 }
