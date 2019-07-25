@@ -66,32 +66,32 @@ byte clockPin = 7;
 ShiftReg buttons = ShiftReg(dataPin, latchPin, clockPin);
 
 void testButtons() {
+  
   for (int i = 0; i < 304; i++) {
-    if (buttons.risingEdge(i)) {
+    
+    if (buttons.hasChanged(i)) {
+      
+      if (buttons.vals[i] == 1) {
 
-      Serial.print("Key");
-      Serial.print("\t");
-      Serial.print("index:");
-      Serial.print(i);
-      Serial.print("\t");
+        Serial.print("Key");
+        Serial.print("\t");
+        Serial.print("index:   ");
+        Serial.print(i);
+        Serial.print("\t");
 
-//      String patchType = 0;
-//
-//      switch (nodes.[i].type) {
-//        case 0:
-//          patchType = "non-patch";
-//        case 1:
-//          patchType = "input";
-//        case 2:
-//          patchType = "special input";
-//        case 3:
-//          patchType = "output";
-//
-//      }
+        String type;
+        if (nodes[i].type == 0)
+          type = "non-patch";
+        else if (nodes[i].type == 1)
+          type = "input";
+        else if (nodes[i].type == 2)
+          type = "special input";
+        else if (nodes[i].type == 3)
+          type = "output";
 
-      Serial.print(nodes[i].type);
-      Serial.println();
-
+        Serial.print(type);
+        Serial.println();
+      }
       buttons.updateLastVal(i);
     }
   }

@@ -1,6 +1,5 @@
 
 struct node {
-  int  index;
   byte ledx;
   byte ledy;
   byte type;  // 0 = not patchable, 1 = input, 2 = special input, 3 = output
