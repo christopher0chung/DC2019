@@ -83,6 +83,7 @@ bool ShiftReg::risingEdge(int i)  {
       return 0;
   else 
     return 0;
+
 }
 
 
@@ -103,5 +104,5 @@ void ShiftReg::updateLastVals() {
 
   for (int i=0; i<304; i++) 
     lastVals[i] = vals[i];
-  
+
 }

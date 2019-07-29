@@ -24,7 +24,7 @@ class ShiftReg {
     bool risingEdge(int i);
     bool fallingEdge(int i); 
 
-    void updateLastVal(int i);  
+    void updateLastVals();  
 
   private:
 
