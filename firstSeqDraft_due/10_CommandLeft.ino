@@ -4,17 +4,46 @@
 //  bool lengthMode;
 //};
 //
-//unsigned long previousMillis = 0;
-//bool tog = 0;
-//unsigned int interval = 1000;
-//
-//void autoTog() {
+
+int seq[4] = {4, 14, 20, 22};
+
+struct toggler {
+
+	bool tog;
+	unsigned int interval;
+	unsigned long previousMillis;
+	int step;
+
+	void autoTog() {
+
+ 		if (millis() - previousMillis >= interval) {
+
+   			previousMillis = millis();
+
+   			nodes[seq[step]].state = 0;
+   			leds.drawPixel(nodes[seq[step]].ledx, nodes[seq[step]].ledy, LOW);
+   			
+   			step++;
+   			step = step % 4;
+   			
+   			nodes[seq[step]].state = 1;
+   			leds.drawPixel(nodes[seq[step]].ledx, nodes[seq[step]].ledy, HIGH);
+
+ 		}
+	}
+};
+
+toggler tog1 = {0, 400};
+
+
+// void autoTog() {
 //  if (millis() - previousMillis >= interval) {
 //    previousMillis = millis();
 //    tog = !tog;
-//    piano[0].state = tog;
+//    nodes[20].state = tog;
+//    leds.drawPixel(nodes[20].ledx, nodes[20].ledy, tog);
 //  }
-//}
+// }
 //
 //void commandLeft() {
 //  

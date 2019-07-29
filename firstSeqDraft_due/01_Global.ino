@@ -1,3 +1,25 @@
+//---------------------------------------------------------------
+//   GLOBAL VARIABLES
+//---------------------------------------------------------------
+
+const int buttonsMax = 304;
+
+enum globalMode {
+  PERFORM,
+  LIVEPATCH, 
+  EDITPATCH 
+};
+
+globalMode currentGlobalMode = PERFORM;
+
+byte          velAdjust[4]     {127, 127, 127, 127};
+unsigned int  lengthAdjust[4]  {  0,   0,   0,   0};
+int           pitchAdjust[4]   {  0,   0,   0,   0};
+
+
+//---------------------------------------------------------------
+//   NODES
+//---------------------------------------------------------------
 
 struct node {
   byte ledx;
@@ -41,6 +63,4 @@ node nodes[] {
   { 30, 6, 0}, { 28, 7, 0}, { 29, 7, 0}, { 27, 2, 0} 
 };
 
-byte          velAdjust[4]     {127, 127, 127, 127};
-unsigned int  lengthAdjust[4]  {  0,   0,   0,   0};
-int           pitchAdjust[4]   {  0,   0,   0,   0};
+

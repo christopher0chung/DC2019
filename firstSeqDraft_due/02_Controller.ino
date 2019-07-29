@@ -69,10 +69,8 @@ void testButtons() {
   
   for (int i = 0; i < 304; i++) {
     
-    if (buttons.hasChanged(i)) {
+    if (buttons.risingEdge(i)) {
       
-      if (buttons.vals[i] == 1) {
-
         Serial.print("Key");
         Serial.print("\t");
         Serial.print("index:   ");
@@ -91,8 +89,7 @@ void testButtons() {
 
         Serial.print(type);
         Serial.println();
-      }
-      buttons.updateLastVal(i);
+      
     }
   }
 }
