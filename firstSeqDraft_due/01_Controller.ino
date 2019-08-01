@@ -57,6 +57,7 @@ void screenPrint(String text) {  // buff[4] doesn't work and i have no clue why
 //---------------------------------------------------------------
 //   BUTTONS
 //---------------------------------------------------------------
+
 #include <CD4021.h>
 
 byte dataPin = 9;
@@ -65,38 +66,11 @@ byte clockPin = 7;
 
 ShiftReg buttons = ShiftReg(dataPin, latchPin, clockPin);
 
-void testButtons() {
-  
-  for (int i = 0; i < 304; i++) {
-    
-    if (buttons.risingEdge(i)) {
-      
-        Serial.print("Key");
-        Serial.print("\t");
-        Serial.print("index:   ");
-        Serial.print(i);
-        Serial.print("\t");
-
-        String type;
-        if (nodes[i].type == 0)
-          type = "non-patch";
-        else if (nodes[i].type == 1)
-          type = "input";
-        else if (nodes[i].type == 2)
-          type = "special input";
-        else if (nodes[i].type == 3)
-          type = "output";
-
-        Serial.print(type);
-        Serial.println();
-      
-    }
-  }
-}
 
 //---------------------------------------------------------------
 //   POTENTIOMETERS
 //---------------------------------------------------------------
+
 #include <CD4067.h>
 
 byte selPins[3] = {15, 16, 17};
@@ -108,24 +82,11 @@ void potsInit() {
   for (int i = 0; i < 200; i++)pots.update();
 }
 
-void testPots() {
-  for (int i = 0; i < 26; i++) {
-    if (pots.hasChanged(i)) {
-      Serial.print("Pot");
-      Serial.print("\t");
-      Serial.print("index:");
-      Serial.print(i);
-      Serial.print("\t");
-      Serial.println(pots.vals[i]);
-      pots.updateLastVals(i);
-      screenPrint(pots.vals[i]);
-    }
-  }
-}
 
 //---------------------------------------------------------------
 //   LEDS
 //---------------------------------------------------------------
+
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Max72xxPanel.h>

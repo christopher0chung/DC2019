@@ -1,46 +1,65 @@
-
-
 void setup() {
 
-//  Serial.begin(9600);
-  potsInit();
-  ledsInit();
-  screenInit();
-  linksInit();
-  currentGlobalMode = LIVEPATCH;
+    potsInit();
+    ledsInit();
+    screenInit();
+    linksInit();
+
+    nodes[299].state = 1;
+    screenPrint(screenUserMode[userMode]);
 }
 
 void loop() {
 
-  buttons.update();
-  pots.update();
-  linkStateUpdate();
+    // UPDATE STATES -----------------------------------------------------------------
 
-  tog1.autoTog();
+    /* Controller Messages */ 
+    buttons.update();
+    pots.update();
 
-
-  for (int i = 0; i < buttonsMax; i++) 
-    leds.drawPixel(nodes[i].ledx, nodes[i].ledy, nodes[i].state);
-
-  if (currentGlobalMode == PERFORM) {
-
-		// autoTog();
-		// commandLeft();
-		// commandPots();
-
-  } 
-  else if (currentGlobalMode == LIVEPATCH || currentGlobalMode == EDITPATCH) {
-  	
-  	readButtons();
-
-  } 
-
-// testButtons();
-// testPots();
+    /* Links Messages */
+    linkStateUpdate();
 
 
+    // TEST ZONE ---------------------------------------------------------------------
 
-  buttons.updateLastVals(); 
-  leds.write();
+    // testButtons();
+    // testPots();
+    tog.autoTog();
+
+
+    // CHECK FOR BUTTON PRESSES ------------------------------------------------------
+
+    for (int i = 0; i < buttonsMax; i++) {
+
+        leds.drawPixel(nodes[i].ledx, nodes[i].ledy, nodes[i].state);
+
+        if (buttons.hasChanged(i)) {
+
+            if (userMode == 2) {
+
+            }
+            else if (userMode == 0 || userMode == 1)
+                patch(i);
+
+            userModeSelect();
+            comCtrlSelect();
+
+        }
+    }
+
+    
+    // UPDATES AND OUTPUTS -----------------------------------------------------------
+
+    buttons.updateLastVals(); 
+
+    if (userMode == 0) 
+        ledsAllLinks(); 
+
+    displayLinks();
+    
+    leds.write();
 
 }
+
+

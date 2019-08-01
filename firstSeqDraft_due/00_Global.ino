@@ -4,13 +4,14 @@
 
 const int buttonsMax = 304;
 
-enum globalMode {
-  PERFORM,
-  LIVEPATCH, 
-  EDITPATCH 
-};
+/* User Mode Selection */
+byte userMode = 1;
+int userModeNode = 299;
 
-globalMode currentGlobalMode = PERFORM;
+/* Com CTRL */
+byte comCtrlMode = 4;
+int comCtrlModeNode = 999;
+byte lastcVal[4]; 
 
 byte          velAdjust[4]     {127, 127, 127, 127};
 unsigned int  lengthAdjust[4]  {  0,   0,   0,   0};

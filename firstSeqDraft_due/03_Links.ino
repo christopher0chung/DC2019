@@ -10,14 +10,14 @@ struct link {
 };
 
 link links[linksMax];
-link newLinkBuffer = {999, 999};
+link undoBuffer = {999, 999};
 int linkCount = 0;
 
 int activeNode = 999;
 
 
 //---------------------------------------------------------------
-//   FUNCTIONS
+//   MAIN FUNCTIONS
 //---------------------------------------------------------------
 
 void linksInit() {
@@ -28,100 +28,60 @@ void linksInit() {
 }
 
 
-void linkStateUpdate(){
+void patch(int index) {
 
-    for (int i = 0; i < linkCount; i++) {
-
-        bool senderState = nodes[links[i].sender].state;
-
-        if (senderState == 1)
-            nodes[links[i].receiver].state = 1;
-        else if (senderState == 0)   
-            nodes[links[i].receiver].state = orGate(i);
-
-    }
-}
+    // Undo Function -------------------------------------------------------------
+    // if (buttons.risingEdge(295))
+    //     undoLastLink(); 
 
 
-bool orGate(int index) {
-    
-    for (int i = 0; i < index; i++) 
-        if (links[i].receiver == links[index].receiver) 
-            if (nodes[links[i].sender].state == 1)
-                return 1;
+    // Set an Active Node --------------------------------------------------------
 
-    return 0;
-
-}
-
-//---------------------------------------------------------------
-//   INTERNAL FUNCTIONS
-//---------------------------------------------------------------
-
-void readButtons() {
-
-    if (activeNode != 999) 
-        displayActiveNodeLinks();
+    if (activeNode == 999 && buttons.risingEdge(index) && nodes[index].type != 0)
+        activeNode = index;  
+    else if (activeNode != 999 && buttons.fallingEdge(activeNode)) 
+        activeNode = 999;
 
 
-    if (currentGlobalMode == LIVEPATCH) {
+    // When Active Node is Set ---------------------------------------------------
 
-        for (int i = 0; i < buttonsMax; i++) {    
+    if (activeNode != 999) {
 
-            if (buttons.hasChanged(i)) {
+        if (buttons.risingEdge(index)) {
 
-                // Set an Active Node --------------------------------------------------------
-                if (activeNode == 999 && buttons.risingEdge(i) && nodes[i].type != 0) {
+            if (isNodeOutput(activeNode) && isNodeInput(index)) {
 
-                    activeNode = i;
+                if (linkExists(activeNode, index)) 
+                    removeLink(activeNode, index);
+                else
+                    addLink(activeNode, index);  
 
-                    if (isNodeOutput(i)) 
-                        newLinkBuffer.sender = i;  
-                    else if (isNodeInput(i)) 
-                        newLinkBuffer.receiver = i;
-
-                    Serial.println("on");
-
-                }
-                else if (activeNode != 999 && buttons.fallingEdge(activeNode)) {
-
-                    activeNode = 999;
-                    leds.fillScreen(0);
-                    Serial.println("off");
-
-                    for (int i = 0; i < buttonsMax; i++) 
-                        leds.drawPixel(nodes[i].ledx, nodes[i].ledy, nodes[i].state);
-
-                }
-
-                // When Active Node is Set ---------------------------------------------------
-                if (activeNode != 999) {
-
-                    if (buttons.risingEdge(i)) {
-
-                        if (isNodeOutput(activeNode) && isNodeInput(i)) {
-
-                            if (linkExists(activeNode, i)) 
-                                removeLink(activeNode, i);
-                            else
-                                addLink(activeNode, i);  
-
-                        }
-                        else if (isNodeOutput(i) && isNodeInput(activeNode)) {
-
-                            if (linkExists(i, activeNode)) 
-                                removeLink(i, activeNode);
-                            else
-                                addLink(i, activeNode);
-
-                        }           
-                    }
-                }       
             }
+            else if (isNodeOutput(index) && isNodeInput(activeNode)) {
+
+                if (linkExists(index, activeNode)) 
+                    removeLink(index, activeNode);
+                else
+                    addLink(index, activeNode);
+
+            }           
         }
-    }
+    }       
 }
 
+
+void  displayLinks() {
+
+    if (userMode == 1 || userMode == 0)
+        if (activeNode != 999) 
+            ledsActiveNodeLinks();
+
+}
+
+
+//---------------------------------------------------------------
+//   CHECK FUNCTIONS
+//---------------------------------------------------------------
 
 bool isNodeInput(int index) {
 
@@ -152,32 +112,33 @@ bool linkExists(int nodeA, int nodeB) {
 }
 
 
-void addLink(int nodeA, int nodeB) {
+//---------------------------------------------------------------
+//   MAKE AND UNMAKE LINK FUNCTIONS
+//---------------------------------------------------------------
 
-    links[linkCount].sender   = nodeA;
-    links[linkCount].receiver = nodeB;
+void addLink(int nodeS, int nodeR) {
+
+    links[linkCount].sender   = nodeS;
+    links[linkCount].receiver = nodeR;
 
     linkCount++;
-
-    screenPrint(linkCount);
-    screen.writeDigitAscii(0, 'L');
-    screen.writeDisplay();
+    screenLinkCount();
 
     if (linkCount >= linksMax) {      
         linkCount = 127;
         screenPrint("LMAX");
     }
-
 }
 
 
-void removeLink(int nodeA, int nodeB) {
+void removeLink(int nodeS, int nodeR) {
 
+    nodes[nodeR].state = 0; 
     int indexToRemove = 999;
 
     for (int i = 0; i < linkCount; i++) 
-        if (links[i].sender == nodeA && links[i].receiver == nodeB)  
-            indexToRemove = i;        
+        if (links[i].sender == nodeS && links[i].receiver == nodeR)  
+            indexToRemove = i;   
 
     for (int i=indexToRemove; i < linksMax; i++) {
         
@@ -191,6 +152,34 @@ void removeLink(int nodeA, int nodeB) {
     }     
 
     linkCount--;
+    screenLinkCount();
+
+}
+
+
+void undoLastLink() {
+
+    if (linkCount > 0) {
+
+        int currentIndex = linkCount - 1;
+        int nodeR = links[currentIndex].receiver;
+
+        nodes[nodeR].state = 0;
+        links[currentIndex].sender   = 999;
+        links[currentIndex].receiver = 999;
+
+        linkCount--;
+        screenLinkCount();
+
+    }
+}
+
+
+//---------------------------------------------------------------
+//   DISPLAY FUNCTIONS
+//---------------------------------------------------------------
+
+void screenLinkCount() {
 
     screenPrint(linkCount);
     screen.writeDigitAscii(0, 'L');
@@ -199,13 +188,34 @@ void removeLink(int nodeA, int nodeB) {
 }
 
 
-void displayActiveNodeLinks() {
+void ledsAllLinks() {
 
-    leds.fillScreen(0);
+    ledsClearLinks();
+
+    byte x;
+    byte y;
+
+    for (int i = 0; i < linkCount; i++) {
+
+        x = nodes[links[i].receiver].ledx;
+        y = nodes[links[i].receiver].ledy;
+        leds.drawPixel(x, y, 1);
+
+        x = nodes[links[i].sender].ledx;
+        y = nodes[links[i].sender].ledy;
+        leds.drawPixel(x, y, 1);
+
+    }
+}
+
+
+void ledsActiveNodeLinks() {
+
+    ledsClearLinks();
 
     byte x = nodes[activeNode].ledx;
     byte y = nodes[activeNode].ledy;
-    leds.drawPixel(x, y, HIGH);
+    leds.drawPixel(x, y, 1);
 
     if (isNodeOutput(activeNode)) {
 
@@ -215,7 +225,7 @@ void displayActiveNodeLinks() {
 
                 x = nodes[links[i].receiver].ledx;
                 y = nodes[links[i].receiver].ledy;
-                leds.drawPixel(x, y, HIGH);
+                leds.drawPixel(x, y, 1);
 
             }
         }
@@ -228,9 +238,52 @@ void displayActiveNodeLinks() {
 
                 x = nodes[links[i].sender].ledx;
                 y = nodes[links[i].sender].ledy;
-                leds.drawPixel(x, y, HIGH);
+                leds.drawPixel(x, y, 1);
 
             }
         }
     }
+}
+
+
+void ledsClearLinks() {
+
+    leds.fillScreen(0);
+    leds.drawPixel(nodes[userModeNode].ledx, nodes[userModeNode].ledy, nodes[userModeNode].state);
+    leds.drawPixel(nodes[comCtrlModeNode].ledx, nodes[comCtrlModeNode].ledy, nodes[comCtrlModeNode].state);   
+
+}
+
+//---------------------------------------------------------------
+//   UPDATE STATES FUNCTIONS
+//---------------------------------------------------------------
+
+void linkStateUpdate(){
+
+    for (int i = 0; i < linkCount; i++) {
+
+        byte x = nodes[links[i].receiver].ledx;
+        byte y = nodes[links[i].receiver].ledy;
+        bool senderState = nodes[links[i].sender].state;
+
+        if (senderState == 1) 
+            nodes[links[i].receiver].state = 1;    
+        else if (senderState == 0 && buttons.vals[links[i].receiver] != 1)  
+            nodes[links[i].receiver].state = orGate(i);
+
+        leds.drawPixel(x, y, nodes[links[i].receiver].state);
+
+    }
+}
+
+
+bool orGate(int index) {
+    
+    for (int i = 0; i < index; i++) 
+        if (links[i].receiver == links[index].receiver) 
+            if (nodes[links[i].sender].state == 1)
+                return 1;
+
+    return 0;
+
 }

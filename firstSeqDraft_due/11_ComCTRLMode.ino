@@ -1,32 +1,41 @@
+//---------------------------------------------------------------
+//   VARIABLES
+//---------------------------------------------------------------
+
+String screenComCtrl[5] = {"VEL", "LEN", "PICH", "CC", " "};
 
 
+//---------------------------------------------------------------
+//   FUNCTIONS
+//---------------------------------------------------------------
 
-// byte mode = 4;
-// String modeScreenText[5] = {"VEL", "LEN", "PICH", "CC", " "};
+void comCtrlSelect() {
 
-// int potArray[4] = {21, 15, 22, 20};
-// byte lastccVal[4];
+	int comCtrlInputs[4] = {285, 301, 302, 296};
 
-// void comSwitchUpdate() {
-//   for (int i = 0; i < 4; i++) {
-//     if (buttons.hasChanged(comSwitch[i].index)) {
-//       if (buttons.vals[comSwitch[i].index] == 1) {
-//         if (mode == i) {
-//           leds.drawPixel(comSwitch[i].ledx, comSwitch[i].ledy, 0);
-//           mode = 4;
-//           screenPrint(modeScreenText[i]);
-//         }
-//         else {
-//           leds.drawPixel(comSwitch[mode].ledx, comSwitch[mode].ledy, 0);
-//           leds.drawPixel(comSwitch[i].ledx, comSwitch[i].ledy, 1);
-//           mode = i;
-//           screenPrint(modeScreenText[i]);
-//         }
-//       }
-//       buttons.updateLastVals(comSwitch[i].index);
-//     }
-//   }
+  	for (int i = 0; i < 4; i++) {
 
+      	if (buttons.risingEdge(comCtrlInputs[i])) {
+
+      		nodes[comCtrlInputs[comCtrlMode]].state = 0;
+
+        	if (comCtrlMode == i) 
+	          comCtrlMode = 4;  
+	        else {
+	          nodes[comCtrlInputs[i]].state = 1;
+	          comCtrlMode = i;
+	        }
+
+	        comCtrlModeNode = comCtrlInputs[i];
+	        screenPrint(screenComCtrl[i]);
+
+	    }
+  	}
+}
+
+// void comCtrlUpdate() {
+
+// 	int comCtrlpots[4] = {21, 15, 22, 20};
 //   for (int i = 0; i < 4; i++) {
 //     if (pots.hasChanged(potArray[i])) {
 
