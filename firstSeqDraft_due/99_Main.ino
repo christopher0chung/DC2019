@@ -20,38 +20,38 @@ void loop() {
     /* Links Messages */
     linkStateUpdate();
 
+    comCtrlUpdate();
 
-    // TEST ZONE ---------------------------------------------------------------------
+    // CHECK FOR BUTTON PRESSES ------------------------------------------------------
+
+
+
+    /* Black Panel Nodes */
+    userModeSelect();
+    comCtrlSelect();
+
+    /* White Panel Nodes */
+
+    if (userMode == 2) 
+        commandLeftButtons();
+    else if (userMode == 0 || userMode == 1)
+        patch();
+    
+
+    leds.drawPixel(nodes[i].ledx, nodes[i].ledy, nodes[i].state);
+    
+
+
+    // MODULE LOGIC ------------------------------------------------------------------
 
     // testButtons();
     // testPots();
     tog.autoTog();
-
-
-    // CHECK FOR BUTTON PRESSES ------------------------------------------------------
-
-    for (int i = 0; i < buttonsMax; i++) {
-
-        leds.drawPixel(nodes[i].ledx, nodes[i].ledy, nodes[i].state);
-
-        if (buttons.hasChanged(i)) {
-
-            if (userMode == 2) {
-
-            }
-            else if (userMode == 0 || userMode == 1)
-                patch(i);
-
-            userModeSelect();
-            comCtrlSelect();
-
-        }
-    }
-
-    
+        
     // UPDATES AND OUTPUTS -----------------------------------------------------------
 
     buttons.updateLastVals(); 
+    pots.updateLastVals();
 
     if (userMode == 0) 
         ledsAllLinks(); 

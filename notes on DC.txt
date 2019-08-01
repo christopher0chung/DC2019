@@ -14,11 +14,17 @@ PATCHING
 ------------------------------------------
 error for attempting to connect input to input or output to output
 error msg for nodes that can't be patched when link attempted
-create undo buffer and note whether patch was made or unmade
 
 
 
 FUTURE IMPLEMENTATION WITH HIGHER LANGUAGE
 ------------------------------------------
 retrigger keyboard notes when node has multiple module sources that overlap true
+
+
+
+Inefficiencies
+------------------------------------------
+- factorial checks with orGate() check as more links are added
+- memory limit on links
 
