@@ -18,13 +18,11 @@ struct toggler {
    			previousMillis = millis();
 
    			nodes[seq[step]].state = 0;
-   			leds.drawPixel(nodes[seq[step]].ledx, nodes[seq[step]].ledy, LOW);
    			
    			step++;
-   			step = step % 3;
+   			step = step % 4;
    			
    			nodes[seq[step]].state = 1;
-   			leds.drawPixel(nodes[seq[step]].ledx, nodes[seq[step]].ledy, HIGH);
 
  		}
 	}
@@ -76,7 +74,6 @@ void testPots() {
       Serial.print(i);
       Serial.print("\t");
       Serial.println(pots.vals[i]);
-      pots.updateLastVals(i);
       screenPrint(pots.vals[i]);
     }
   }

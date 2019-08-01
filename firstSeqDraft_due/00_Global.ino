@@ -11,7 +11,7 @@ int userModeNode = 299;
 /* Com CTRL */
 byte comCtrlMode = 4;
 int comCtrlModeNode = 999;
-byte lastcVal[4]; 
+byte lastccVal[4]; 
 
 byte          velAdjust[4]     {127, 127, 127, 127};
 unsigned int  lengthAdjust[4]  {  0,   0,   0,   0};
@@ -28,7 +28,11 @@ struct node {
   byte type;  // 0 = not patchable, 1 = input, 2 = special input, 3 = output
   bool state;
   bool lastState; 
+  bool muteState;
+  bool togState;
+  bool invertState;
 };
+
 
 node nodes[] {
   { 19, 6, 1}, { 41, 2, 1}, { 43, 3, 1}, { 40, 3, 1}, { 23, 6, 3}, { 26, 7, 3}, { 24, 7, 3}, { 41, 3, 1}, { 23, 5, 3}, { 40, 2, 1}, 

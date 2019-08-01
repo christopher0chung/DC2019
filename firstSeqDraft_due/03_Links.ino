@@ -28,45 +28,51 @@ void linksInit() {
 }
 
 
-void patch(int index) {
+void patch() {
 
-    // Undo Function -------------------------------------------------------------
-    // if (buttons.risingEdge(295))
-    //     undoLastLink(); 
+    for (int i = 0; i < buttonsMax; i++) {
+            
+        if (buttons.hasChanged(i)) {
 
-
-    // Set an Active Node --------------------------------------------------------
-
-    if (activeNode == 999 && buttons.risingEdge(index) && nodes[index].type != 0)
-        activeNode = index;  
-    else if (activeNode != 999 && buttons.fallingEdge(activeNode)) 
-        activeNode = 999;
+            // Undo Function -------------------------------------------------------------
+            // if (buttons.risingEdge(295))
+            //     undoLastLink(); 
 
 
-    // When Active Node is Set ---------------------------------------------------
+            // Set an Active Node --------------------------------------------------------
 
-    if (activeNode != 999) {
+            if (activeNode == 999 && buttons.risingEdge(i) && nodes[i].type != 0)
+                activeNode = i;  
+            else if (activeNode != 999 && buttons.fallingEdge(activeNode)) 
+                activeNode = 999;
 
-        if (buttons.risingEdge(index)) {
 
-            if (isNodeOutput(activeNode) && isNodeInput(index)) {
+            // When Active Node is Set ---------------------------------------------------
 
-                if (linkExists(activeNode, index)) 
-                    removeLink(activeNode, index);
-                else
-                    addLink(activeNode, index);  
+            if (activeNode != 999) {
 
-            }
-            else if (isNodeOutput(index) && isNodeInput(activeNode)) {
+                if (buttons.risingEdge(i)) {
 
-                if (linkExists(index, activeNode)) 
-                    removeLink(index, activeNode);
-                else
-                    addLink(index, activeNode);
+                    if (isNodeOutput(activeNode) && isNodeInput(i)) {
 
-            }           
+                        if (linkExists(activeNode, i)) 
+                            removeLink(activeNode, i);
+                        else
+                            addLink(activeNode, i);  
+
+                    }
+                    else if (isNodeOutput(i) && isNodeInput(activeNode)) {
+
+                        if (linkExists(i, activeNode)) 
+                            removeLink(i, activeNode);
+                        else
+                            addLink(i, activeNode);
+
+                    }           
+                }
+            }  
         }
-    }       
+    }     
 }
 
 
@@ -101,10 +107,10 @@ bool isNodeOutput(int index) {
 }
 
 
-bool linkExists(int nodeA, int nodeB) {
+bool linkExists(int nodeS, int nodeR) {
 
     for (int i = 0; i < linkCount; i++)            
-        if (links[i].sender == nodeA && links[i].receiver == nodeB) 
+        if (links[i].sender == nodeS && links[i].receiver == nodeR) 
             return true;
         
     return false;

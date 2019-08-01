@@ -76,11 +76,8 @@ bool ShiftReg::hasChanged(int i)  {
 
 bool ShiftReg::risingEdge(int i)  {
 
-  if (vals[i] != lastVals[i]) 
-    if (vals[i] == 1) 
-      return 1;
-    else 
-      return 0;
+  if (vals[i] == 1) 
+    return 1;
   else 
     return 0;
 
@@ -89,12 +86,9 @@ bool ShiftReg::risingEdge(int i)  {
 
 bool ShiftReg::fallingEdge(int i)  {
 
-  if (vals[i] != lastVals[i]) 
-    if (vals[i] == 0) 
-      return 1;
-    else
-      return 0;
-  else 
+  if (vals[i] == 0) 
+    return 1;
+  else
     return 0;
 
 }
